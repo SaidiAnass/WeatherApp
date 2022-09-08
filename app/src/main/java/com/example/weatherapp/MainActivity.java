@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -22,8 +23,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -126,6 +135,28 @@ public class MainActivity extends AppCompatActivity {
     private void getWeatherInfo(String cityName){
         String url = "http://api.weatherapi.com/v1/forecast.json?key=ca3f05ebbc6a46efb32153855220609&q=" + cityName + "&days=1&aqi=yes&alerts=yes";
         cityNameTV.setText(cityName);
-        RequestQueue requestQueue =
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                loadingPB.setVisibility(View.GONE);
+                homeRL.setVisibility(View.VISIBLE);
+                weatherRVModelArrayList.clear();
+
+                try {
+                    String temperature = response.getJSONObject("current").getString("temp_c");
+                    temperatureTV.setText(temperature + "°C");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, "Please enter valid city Name", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
     }
 }

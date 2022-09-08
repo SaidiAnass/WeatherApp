@@ -19,11 +19,11 @@ import java.util.Date;
 
 public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<WeatherRVModel> WeatherRVModalArrayList;
+    private ArrayList<WeatherRVModel> WeatherRVModelArrayList;
 
-    public WeatherRVAdapter(Context context, ArrayList<WeatherRVModel> weatherRVModalArrayList) {
+    public WeatherRVAdapter(Context context, ArrayList<WeatherRVModel> weatherRVModelArrayList) {
         this.context = context;
-        WeatherRVModalArrayList = weatherRVModalArrayList;
+        WeatherRVModelArrayList = weatherRVModelArrayList;
     }
 
     @NonNull
@@ -35,14 +35,14 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull WeatherRVAdapter.ViewHolder holder, int position) {
-        WeatherRVModel modal = WeatherRVModalArrayList.get(position);
-        holder.temperatureTV.setText(modal.getTemperature() + "°C");
-        Picasso.get().load("http:".concat(modal.getIcon())).into(holder.conditionIV);
-        holder.windTV.setText(modal.getWindSpeed() + "km/h");
+        WeatherRVModel model = WeatherRVModelArrayList.get(position);
+        holder.temperatureTV.setText(model.getTemperature() + "°C");
+        Picasso.get().load("http:".concat(model.getIcon())).into(holder.conditionIV);
+        holder.windTV.setText(model.getWindSpeed() + "km/h");
         SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         SimpleDateFormat output = new SimpleDateFormat("hh:mm aa");
         try{
-            Date t = input.parse(modal.getTime());
+            Date t = input.parse(model.getTime());
             holder.timeTV.setText(output.format(t));
         }catch(ParseException e){
             e.printStackTrace();
@@ -52,7 +52,7 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
 
     @Override
     public int getItemCount() {
-        return WeatherRVModalArrayList.size();
+        return WeatherRVModelArrayList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
